@@ -7,7 +7,11 @@ import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.http.HTTPRepository;
 
 public class Main {
-    
+
+    /*
+        Noddy main method to show connecting to an existing HTTPRepository - in this case not so useful, as it's tied
+        to being a BBC one...
+     */
     public static void main(String[] args) throws Exception {
 
         HTTPRepository repository = new HTTPRepository("http://pal.sandbox.dev.bbc.co.uk:8173/bigowlim-sesame", "dsp-cluster");
