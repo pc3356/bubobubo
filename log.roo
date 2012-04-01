@@ -1,0 +1,30 @@
+// Spring Roo 1.2.1.RELEASE [rev 6eae723] log opened at 2012-04-01 19:19:44
+project --topLevelPackage com.bubobubo
+persistence setup --provider HIBERNATE --database MYSQL --hostName localhost --userName bubobubo --password bubobubo
+entity jpa --class ~.domain.Roles --testAutomatically 
+field string --fieldName nameDa --notNull --sizeMax 50 --class ~.domain.Roles
+entity jpa --class ~.domain.Users --testAutomatically
+field string --fieldName usernameDa --notNull --sizeMin 3 --sizeMax 30
+field string --fieldName passwordDa --sizeMax 100
+field boolean --fieldName enabledDa --notNull true
+field set --fieldName roles --type ~.domain.Roles --cardinality MANY_TO_MANY --class ~.domain.Users
+web mvc setup
+web mvc scaffold --class ~.domain.Roles
+web mvc scaffold --class ~.domain.Users
+exit
+// Spring Roo 1.2.1.RELEASE [rev 6eae723] log closed at 2012-04-01 19:24:05
+// Spring Roo 1.2.1.RELEASE [rev 6eae723] log opened at 2012-04-01 19:24:39
+project --topLevelPackage com.bubobubo
+persistence setup --provider HIBERNATE --database MYSQL --hostName localhost --userName bubobubo --password bubobubo
+entity jpa --class ~.domain.Roles --testAutomatically 
+field string --fieldName nameDa --notNull --sizeMax 50 --class ~.domain.Roles
+entity jpa --class ~.domain.Users --testAutomatically
+field string --fieldName usernameDa --notNull --sizeMin 3 --sizeMax 30
+field string --fieldName passwordDa --sizeMax 100
+field boolean --fieldName enabledDa --notNull true
+field set --fieldName roles --type ~.domain.Roles --cardinality MANY_TO_MANY --class ~.domain.Users
+web mvc setup
+web mvc all --package com.bubobubo.web
+security setup
+exit
+// Spring Roo 1.2.1.RELEASE [rev 6eae723] log closed at 2012-04-01 19:57:19
