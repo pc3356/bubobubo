@@ -86,21 +86,16 @@
     </servlet>
 
     <servlet>
-        <servlet-name>jersey-serlvet</servlet-name>
-        <servlet-class>
-            com.sun.jersey.spi.spring.container.servlet.SpringServlet
-        </servlet-class>
+        <servlet-name>Jersey Web Application</servlet-name>
+        <servlet-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet</servlet-class>
         <init-param>
-            <param-name>
-                com.sun.jersey.config.property.packages
-            </param-name>
-            <param-value>com.bubobubo.server</param-value>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>com.bubobubo</param-value>
         </init-param>
-        <load-on-startup>1</load-on-startup>
+        <load-on-startup>0</load-on-startup>
     </servlet>
-
     <servlet-mapping>
-        <servlet-name>jersey-serlvet</servlet-name>
+        <servlet-name>Jersey Web Application</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
     
