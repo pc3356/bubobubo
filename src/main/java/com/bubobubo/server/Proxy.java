@@ -2,62 +2,82 @@ package com.bubobubo.server;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.ViewResource;
 import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.spi.component.ProviderServices;
-import com.sun.jersey.core.spi.factory.MessageBodyFactory;
 import org.springframework.stereotype.Component;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.net.URI;
+import java.util.List;
+import java.util.Map;
 
 @Component
 @Path("/connection")
 public class Proxy {
 
+    private String targetUri = "http://www.bbc.co.uk/";
+
     @GET
-    public Response get(@Context Request request) throws Exception {
+    public Response get(@Context HttpHeaders headers, String body) throws Exception {
+        return buildResponse(
+                buildResource(headers, body).get(ClientResponse.class)
+        );
+    }
+
+    private WebResource.Builder buildResource(HttpHeaders headers, String body) {
 
         Client c = Client.create();
-        String uri = "http://static.bbci.co.uk/h4discoveryzone/ic/newsimg/media/images/229/129/59496000/jpg/_59496825_59496662.jpg";
-        WebResource r = c.resource(uri);
-        MediaType[] mediaTypes = {
-                MediaType.APPLICATION_OCTET_STREAM_TYPE,
-                MediaType.APPLICATION_JSON_TYPE,
-                MediaType.APPLICATION_XHTML_XML_TYPE,
-                MediaType.APPLICATION_XML_TYPE
-        };
-        r.accept(mediaTypes);
-        ClientResponse response = r.get(ClientResponse.class);
-
-        String entity = response.getEntity(String.class);
-
-        return Response.status(response.getClientResponseStatus()).entity(entity).build();
-
-
+        WebResource.Builder resourceBuilder = c.resource(targetUri).entity(body);
+        
+        for(Map.Entry<String, List<String>> header:headers.getRequestHeaders().entrySet()){
+            resourceBuilder.header(header.getKey(), header.getValue());
+        }
+        
+        return resourceBuilder;
     }
 
     @PUT
-    public Response put() {
-        return null;
+    public Response put(@Context HttpHeaders headers, String body) throws Exception {
+        return buildResponse(
+                buildResource(headers, body).put(ClientResponse.class)
+        );
     }
 
     @POST
-    public Response post() {
-        return null;
+    public Response post(@Context HttpHeaders headers, String body) throws Exception {
+        return buildResponse(
+                buildResource(headers, body).post(ClientResponse.class)
+        );
     }
 
     @DELETE
-    public Response delete() {
-        return null;
+    public Response delete(@Context HttpHeaders headers, String body) throws Exception {
+        return buildResponse(
+                buildResource(headers, body).delete(ClientResponse.class)
+        );
     }
 
     @OPTIONS
-    public Response options() {
-        return null;
+    public Response options(@Context HttpHeaders headers, String body) throws Exception {
+        return buildResponse(
+                buildResource(headers, body).options(ClientResponse.class)
+        );
+    }
+
+    @HEAD
+    public Response head(@Context HttpHeaders headers, String body) throws Exception {
+        return buildResponse(
+                buildResource(headers, body).head()
+        );
+    }
+
+
+    public Response buildResponse(ClientResponse clientResponse) throws Exception {
+        Response.ResponseBuilder builder = Response
+                .status(clientResponse.getStatus())
+                .entity(clientResponse.getEntity(byte[].class))
+                .type(clientResponse.getType());
+
+        return builder.build();
+
     }
 
 }
