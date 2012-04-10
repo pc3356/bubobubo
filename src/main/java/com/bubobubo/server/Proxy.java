@@ -16,16 +16,16 @@ public class Proxy {
     private String targetUri = "http://www.bbc.co.uk/";
 
     @GET
-    public Response get(@Context HttpHeaders headers, String body) throws Exception {
+    public Response get(@Context HttpHeaders headers, String requestBody) throws Exception {
         return buildResponse(
-                buildResource(headers, body).get(ClientResponse.class)
+                buildResource(headers, requestBody).get(ClientResponse.class)
         );
     }
 
-    private WebResource.Builder buildResource(HttpHeaders headers, String body) {
+    private WebResource.Builder buildResource(HttpHeaders headers, String requestBody) {
 
         Client c = Client.create();
-        WebResource.Builder resourceBuilder = c.resource(targetUri).entity(body);
+        WebResource.Builder resourceBuilder = c.resource(targetUri).entity(requestBody);
         
         for(Map.Entry<String, List<String>> header:headers.getRequestHeaders().entrySet()){
             resourceBuilder.header(header.getKey(), header.getValue());
@@ -35,37 +35,37 @@ public class Proxy {
     }
 
     @PUT
-    public Response put(@Context HttpHeaders headers, String body) throws Exception {
+    public Response put(@Context HttpHeaders headers, String requestBody) throws Exception {
         return buildResponse(
-                buildResource(headers, body).put(ClientResponse.class)
+                buildResource(headers, requestBody).put(ClientResponse.class)
         );
     }
 
     @POST
-    public Response post(@Context HttpHeaders headers, String body) throws Exception {
+    public Response post(@Context HttpHeaders headers, String requestBody) throws Exception {
         return buildResponse(
-                buildResource(headers, body).post(ClientResponse.class)
+                buildResource(headers, requestBody).post(ClientResponse.class)
         );
     }
 
     @DELETE
-    public Response delete(@Context HttpHeaders headers, String body) throws Exception {
+    public Response delete(@Context HttpHeaders headers, String requestBody) throws Exception {
         return buildResponse(
-                buildResource(headers, body).delete(ClientResponse.class)
+                buildResource(headers, requestBody).delete(ClientResponse.class)
         );
     }
 
     @OPTIONS
-    public Response options(@Context HttpHeaders headers, String body) throws Exception {
+    public Response options(@Context HttpHeaders headers, String requestBody) throws Exception {
         return buildResponse(
-                buildResource(headers, body).options(ClientResponse.class)
+                buildResource(headers, requestBody).options(ClientResponse.class)
         );
     }
 
     @HEAD
-    public Response head(@Context HttpHeaders headers, String body) throws Exception {
+    public Response head(@Context HttpHeaders headers, String requestBody) throws Exception {
         return buildResponse(
-                buildResource(headers, body).head()
+                buildResource(headers, requestBody).head()
         );
     }
 
