@@ -3,6 +3,7 @@ package com.bubobubo.server;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -10,10 +11,36 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-@Path("/connection")
+@Path("/")
 public class Proxy {
 
-    private String targetUri = "http://www.bbc.co.uk/";
+    private final static Logger LOGGER = Logger.getLogger(Proxy.class);
+
+    private String targetUri = "http://theregister.co.uk";
+
+    @GET
+    @Path("/{uri: [a-zA-Z0-9_/\\.]*}")
+    public Response getUri(@Context HttpHeaders headers, @PathParam("uri") String uri, String requestBody) throws Exception {
+
+        LOGGER.info("Fetching uri: " + targetUri + "/" + uri);
+
+        Client c = Client.create();
+        WebResource.Builder resourceBuilder = c.resource(targetUri + "/" + uri).entity(requestBody);
+
+        ClientResponse clientResponse = resourceBuilder.get(ClientResponse.class);
+
+        for(Map.Entry<String, List<String>> header : headers.getRequestHeaders().entrySet()) {
+            resourceBuilder.header(header.getKey(), header.getValue());
+        }
+
+        Response.ResponseBuilder builder = Response
+                .status(clientResponse.getStatus())
+                .entity(clientResponse.getEntity(byte[].class))
+                .type(clientResponse.getType());
+
+        return builder.build();
+
+    }
 
     @GET
     public Response get(@Context HttpHeaders headers, String requestBody) throws Exception {
