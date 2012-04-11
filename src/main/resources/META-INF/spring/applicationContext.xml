@@ -48,7 +48,7 @@
         <context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
     <bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="driverClassName" value="${driver.className}"/>
         <property name="url" value="${BUBOBUBO_DB_URL}"/>
         <property name="username" value="${BUBOBUBO_DB_USER}"/>
         <property name="password" value="${BUBOBUBO_DB_PASSWORD}"/>
