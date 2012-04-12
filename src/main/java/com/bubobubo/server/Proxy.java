@@ -7,6 +7,8 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -16,16 +18,17 @@ public class Proxy {
 
     private final static Logger LOGGER = Logger.getLogger(Proxy.class);
 
-    private String targetUri = "http://theregister.co.uk";
+    private String targetUri = "http://localhost:9090";
 
     @GET
-    @Path("/{uri: [a-zA-Z0-9_/\\.]*}")
+    @Path("/{uri: .*}")
     public Response getUri(@Context HttpHeaders headers, @PathParam("uri") String uri, String requestBody) throws Exception {
 
-        LOGGER.info("Fetching uri: " + targetUri + "/" + uri);
+        String target = buildUrl(headers, uri);
+        LOGGER.info("Fetching uri: " + target);
 
         Client c = Client.create();
-        WebResource.Builder resourceBuilder = c.resource(targetUri + "/" + uri).entity(requestBody);
+        WebResource.Builder resourceBuilder = c.resource(target).entity(requestBody);
 
         ClientResponse clientResponse = resourceBuilder.get(ClientResponse.class);
 
@@ -105,6 +108,23 @@ public class Proxy {
 
         return builder.build();
 
+    }
+
+    private String buildUrl(HttpHeaders headers, String uri) throws Exception {
+
+        StringBuilder builder = new StringBuilder(targetUri);
+        if(headers.getRequestHeader("referer") != null) {
+            String referrer = headers.getRequestHeader("referer").get(0);
+
+            try {
+                URL url = new URL(referrer);
+                builder.append(url.getPath());
+            } catch (MalformedURLException mue) {
+                /* don't do much.... */
+                throw new Exception(mue);
+            }
+        }
+        return builder.append('/').append(uri).toString();
     }
 
 }
