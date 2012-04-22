@@ -4,6 +4,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -18,7 +19,8 @@ public class Proxy {
 
     private final static Logger LOGGER = Logger.getLogger(Proxy.class);
 
-    private String targetUri = "http://localhost:9090";
+    @Value("${target.server}")
+    private String targetUri;
 
     @GET
     @Path("/{uri: .*}")
