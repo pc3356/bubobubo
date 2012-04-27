@@ -1,14 +1,17 @@
 package com.bubobubo.server;
 
+import com.bubobubo.util.UrlUtils;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jndi.toolkit.url.UrlUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +26,16 @@ public class Proxy {
     private String targetUri;
 
     @GET
-    @Path("/{uri: .*}")
+    @Path("{uri: .*}")
     public Response getUri(@Context HttpHeaders headers, @PathParam("uri") String uri, String requestBody) throws Exception {
 
+        LOGGER.info(new URI(uri).isAbsolute() ? "Absolute URI" : "Relative URI");
+
+
+
         String target = buildUrl(headers, uri);
-        LOGGER.info("Fetching uri: " + target);
+        LOGGER.info("Raw URI: " + uri);
+        LOGGER.info("Fetching: " + target);
 
         Client c = Client.create();
         WebResource.Builder resourceBuilder = c.resource(target).entity(requestBody);
@@ -115,12 +123,13 @@ public class Proxy {
     private String buildUrl(HttpHeaders headers, String uri) throws Exception {
 
         StringBuilder builder = new StringBuilder(targetUri);
-        if(headers.getRequestHeader("referer") != null) {
-            String referrer = headers.getRequestHeader("referer").get(0);
+        String referrer = UrlUtils.getReferringUri(headers);
+        if(referrer != null) {
 
             try {
+                LOGGER.info("Appending referrer path: " + referrer);
                 URL url = new URL(referrer);
-                builder.append(url.getPath());
+                //builder.append(url.getPath());
             } catch (MalformedURLException mue) {
                 /* don't do much.... */
                 throw new Exception(mue);

@@ -41,22 +41,21 @@ public class UrlUtils {
             }
         }
 
-        URI uri = UriBuilder.fromPath(basePath).path(targetUri).build();
-//        StringBuilder builder = new StringBuilder();
-//
 
-//
-//        }
-//
-//        if(!builder.toString().endsWith("/")) {
-//            builder.append('/');
-//        }
-//        return builder.append(targetUri).toString();
-        String out = uri.toString();
-        if(!out.startsWith("/")) {
-            out = "/" + out;
+
+        //URI uri = UriBuilder.fromPath(basePath).path(targetUri).build();
+        StringBuilder builder = new StringBuilder();
+
+
+        if(!builder.toString().endsWith("/")) {
+            builder.append('/');
         }
-        return out;
+        return builder.append(targetUri).toString();
+//        String out = uri.toString();
+//        if(!out.startsWith("/")) {
+//            out = "/" + out;
+//        }
+//        return out;
     }
 
     public static boolean hasProtocol(String uri) {
