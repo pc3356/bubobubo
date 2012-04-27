@@ -16,6 +16,9 @@
         <spring.version>3.1.0.RELEASE</spring.version>
         <spring-security.version>3.1.0.RELEASE</spring-security.version>
         <jersey.version>1.12</jersey.version>
+        <jetty.version>8.1.2.v20120308</jetty.version>
+        <apache.http.components.version>4.1.3</apache.http.components.version>
+        <openrdf.version>2.6.3</openrdf.version>
     </properties>
     <repositories>
         <repository>
@@ -32,6 +35,12 @@
             <id>spring-roo-repository</id>
             <name>Spring Roo Repository</name>
             <url>http://spring-roo-repository.springsource.org/release</url>
+        </repository>
+        <repository>
+            <id>aduna.java.net</id>
+            <name>Aduna Maven 2 Repository</name>
+            <url>http://repo.aduna-software.org/maven2/releases/</url>
+            <layout>default</layout>
         </repository>
     </repositories>
     <pluginRepositories>
@@ -189,7 +198,7 @@
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>8.0.1.v20110908</version>
+                <version>${jetty.version}</version>
                 <configuration>
                     <webAppConfig>
                         <contextPath>/${project.name}</contextPath>
@@ -197,6 +206,7 @@
                 </configuration>
             </plugin>
         </plugins>
+
     </build>
 
     <dependencies>
@@ -526,6 +536,87 @@
             <artifactId>spring-security-taglibs</artifactId>
             <version>${spring-security.version}</version>
         </dependency>
+
+        <!-- jetty related stuff-->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-webapp</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-io</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>${apache.http.components.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${apache.http.components.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openrdf.sesame</groupId>
+            <artifactId>sesame-model</artifactId>
+            <version>${openrdf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openrdf.sesame</groupId>
+            <artifactId>sesame-repository-api</artifactId>
+            <version>${openrdf.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openrdf.sesame</groupId>
+            <artifactId>sesame-repository-http</artifactId>
+            <version>${openrdf.version}</version>
+        </dependency>
+
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>test</id>
+            <build>
+                <filters>
+                    <filter>src/main/filters/test.properties</filter>
+                </filters>
+            </build>
+        </profile>
+        <profile>
+            <id>dev</id>
+            <build>
+                <filters>
+                    <filter>src/main/filters/dev.properties</filter>
+                </filters>
+            </build>
+        </profile>
+        <profile>
+            <id>live</id>
+            <build>
+                <filters>
+                    <filter>src/main/filters/live.properties</filter>
+                </filters>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
