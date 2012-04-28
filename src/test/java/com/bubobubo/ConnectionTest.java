@@ -6,13 +6,13 @@ import org.junit.Test;
 
 import static org.junit.Assert.fail;
 
-public class ConnectionTest extends EmbeddedJettyServer{
+public class ConnectionTest extends EmbeddedJettyServer {
 
 
     @BeforeClass
-    public void setupClass() throws Exception {
+    public static void setupClass() throws Exception {
         // start the jetty server
-        useWebXmlFileFromClasspath("webapp");
+        useWebXmlFileFromClasspath("META-INF/web.xml");
         start();
         // create the in mem repo
 

@@ -311,6 +311,10 @@ public abstract class EmbeddedJettyServer {
         webXmlFile = new ClassPathResource(path).getFile();
     }
 
+    public static void useWebXmlFileFromPath(String path) throws IOException {
+        webXmlFile = new File(path);
+    }
+
     public static void destroyContexts() {
         eventListeners.clear();
         contextParams.clear();
