@@ -12,6 +12,7 @@
         <intercept-url pattern="/choices/**" access="hasRole('ROLE_ADMIN')" />
         <intercept-url pattern="/member/**" access="isAuthenticated()" />
         <intercept-url pattern="/resources/**" access="permitAll" />
+        <intercept-url pattern="/proxy/**" access="isFullyAuthenticated()"/>
         <intercept-url pattern="/**" access="permitAll" />
     </http>
     <!-- Configure Authentication mechanism -->

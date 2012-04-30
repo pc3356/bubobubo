@@ -20,7 +20,7 @@ public class ConnectionTest extends EmbeddedJettyServer {
 
     @Test
     public void getConnectionToInMemRepoViaProxy(){
-        // try and make successful connex
+        // try and make successful conn
         fail("make this work");
     }
 }

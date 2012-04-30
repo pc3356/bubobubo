@@ -25,26 +25,50 @@ public class Proxy {
     @Value("${target.server}")
     private String targetUri;
 
+//    @GET
+//    @Path("{uri: .*}")
+//    public Response getUri(@Context HttpHeaders headers, @PathParam("uri") String uri, String requestBody) throws Exception {
+//
+//        LOGGER.info(new URI(uri).isAbsolute() ? "Absolute URI" : "Relative URI");
+//
+//
+//
+//        String target = buildUrl(headers, uri);
+//        LOGGER.info("Raw URI: " + uri);
+//        LOGGER.info("Fetching: " + target);
+//
+//        Client c = Client.create();
+//        WebResource.Builder resourceBuilder = c.resource(target).entity(requestBody);
+//
+//        ClientResponse clientResponse = resourceBuilder.get(ClientResponse.class);
+//
+//        for(Map.Entry<String, List<String>> header : headers.getRequestHeaders().entrySet()) {
+//            resourceBuilder.header(header.getKey(), header.getValue());
+//        }
+//
+//        Response.ResponseBuilder builder = Response
+//                .status(clientResponse.getStatus())
+//                .entity(clientResponse.getEntity(byte[].class))
+//                .type(clientResponse.getType());
+//
+//        return builder.build();
+//
+//    }
+
     @GET
-    @Path("{uri: .*}")
-    public Response getUri(@Context HttpHeaders headers, @PathParam("uri") String uri, String requestBody) throws Exception {
+    @Path("/proxy/{uri: .*}")
+    public Response proxy(@Context HttpHeaders headers, String requestBody) throws Exception {
 
-        LOGGER.info(new URI(uri).isAbsolute() ? "Absolute URI" : "Relative URI");
-
-
-
-        String target = buildUrl(headers, uri);
-        LOGGER.info("Raw URI: " + uri);
-        LOGGER.info("Fetching: " + target);
+        String urlS = "http://localhost:9191/rest-endpoints/endpoints/endpoint";
 
         Client c = Client.create();
-        WebResource.Builder resourceBuilder = c.resource(target).entity(requestBody);
+        WebResource.Builder resourceBuilder = c.resource(urlS).entity(requestBody);
 
-        ClientResponse clientResponse = resourceBuilder.get(ClientResponse.class);
-
-        for(Map.Entry<String, List<String>> header : headers.getRequestHeaders().entrySet()) {
+        for(Map.Entry<String, List<String>> header:headers.getRequestHeaders().entrySet()){
             resourceBuilder.header(header.getKey(), header.getValue());
         }
+
+        ClientResponse clientResponse = resourceBuilder.get(ClientResponse.class);
 
         Response.ResponseBuilder builder = Response
                 .status(clientResponse.getStatus())
@@ -52,15 +76,14 @@ public class Proxy {
                 .type(clientResponse.getType());
 
         return builder.build();
-
     }
 
-    @GET
-    public Response get(@Context HttpHeaders headers, String requestBody) throws Exception {
-        return buildResponse(
-                buildResource(headers, requestBody).get(ClientResponse.class)
-        );
-    }
+//    @GET
+//    public Response get(@Context HttpHeaders headers, String requestBody) throws Exception {
+//        return buildResponse(
+//                buildResource(headers, requestBody).get(ClientResponse.class)
+//        );
+//    }
 
     private WebResource.Builder buildResource(HttpHeaders headers, String requestBody) {
 
