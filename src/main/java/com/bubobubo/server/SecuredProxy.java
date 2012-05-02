@@ -56,7 +56,7 @@ public class SecuredProxy {
             resourceBuilder.header(header.getKey(), header.getValue());
         }
 
-        resourceBuilder.accept(MediaType.WILDCARD_TYPE);
+        resourceBuilder.accept(MediaType.valueOf("application/sparql-results+json"));
 
         ClientResponse clientResponse = resourceBuilder.get(ClientResponse.class);
 
