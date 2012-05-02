@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-@Path("/abcd")
+@Path("/excluded")
 public class Proxy {
 
     private final static Logger LOGGER = Logger.getLogger(Proxy.class);
@@ -27,7 +27,7 @@ public class Proxy {
     @Value("${target.server}")
     private String targetUri;
 
-    @GET
+    //@GET
     //@Path("{uri: .*}")
     public Response getUri(@Context HttpHeaders headers, @PathParam("uri") String uri, String requestBody) throws Exception {
 
@@ -55,12 +55,12 @@ public class Proxy {
 
     }
 
-//    @GET
-//    public Response get(@Context HttpHeaders headers, String requestBody) throws Exception {
-//        return buildResponse(
-//                buildResource(headers, requestBody).get(ClientResponse.class)
-//        );
-//    }
+    @GET
+    public Response get(@Context HttpHeaders headers, String requestBody) throws Exception {
+        return buildResponse(
+                buildResource(headers, requestBody).get(ClientResponse.class)
+        );
+    }
 
     private WebResource.Builder buildResource(HttpHeaders headers, String requestBody) {
 
