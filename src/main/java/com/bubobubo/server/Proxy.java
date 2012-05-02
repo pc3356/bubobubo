@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-@Path("/")
+@Path("/abcd")
 public class Proxy {
 
     private final static Logger LOGGER = Logger.getLogger(Proxy.class);
@@ -28,7 +28,7 @@ public class Proxy {
     private String targetUri;
 
     @GET
-    @Path("{uri: .*}")
+    //@Path("{uri: .*}")
     public Response getUri(@Context HttpHeaders headers, @PathParam("uri") String uri, String requestBody) throws Exception {
 
         LOGGER.info(new URI(uri).isAbsolute() ? "Absolute URI" : "Relative URI");
@@ -55,12 +55,12 @@ public class Proxy {
 
     }
 
-    @GET
-    public Response get(@Context HttpHeaders headers, String requestBody) throws Exception {
-        return buildResponse(
-                buildResource(headers, requestBody).get(ClientResponse.class)
-        );
-    }
+//    @GET
+//    public Response get(@Context HttpHeaders headers, String requestBody) throws Exception {
+//        return buildResponse(
+//                buildResource(headers, requestBody).get(ClientResponse.class)
+//        );
+//    }
 
     private WebResource.Builder buildResource(HttpHeaders headers, String requestBody) {
 
