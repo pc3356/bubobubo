@@ -7,7 +7,7 @@
     <!-- HTTP security configurations -->
     <http auto-config="true" use-expressions="true">
         <form-login />
-        <intercept-url pattern="/proxy/**" access="isAuthenticated()"/>
+        <intercept-url pattern="/bubobubo/**" access="isAuthenticated()"/>
         <!--<intercept-url pattern="/**" access="permitAll" />-->
     </http>
     <!-- Configure Authentication mechanism -->

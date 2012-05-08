@@ -8,10 +8,7 @@ import com.sun.jersey.api.client.WebResource;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.net.URLEncoder;
 import java.util.List;
@@ -23,7 +20,7 @@ import java.util.Map;
  * Date: 30/04/2012
  * Time: 23:00
  */
-@Path("/")
+@Path("/bubobubo")
 public class SecuredProxy {
 
     private final static Logger LOGGER = Logger.getLogger(SecuredProxy.class);
@@ -40,16 +37,20 @@ public class SecuredProxy {
     Request request;
 
     @GET
-    @Path("{uri: (.+?)?}")
-    public Response get(@Context HttpHeaders headers, @PathParam("uri") String uri) throws Exception {
+    @Path("/repositories/{repositoryId: .* }")
+    public Response get(
+                        @Context HttpHeaders headers,
+                        @PathParam("repositoryId") String repositoryId,
+                        @QueryParam("query") String query
+    ) throws Exception {
 
-        LOGGER.info("GET Path: " + uri);
+        LOGGER.info("Query: " + query);
         LOGGER.info("GET Going to " + fullUrl);
 
-        String query = "query=" + URLEncoder.encode("SELECT ?s WHERE {?s ?p ?o}", "UTF-8");
+        //String query = "query=" + URLEncoder.encode("SELECT ?s WHERE {?s ?p ?o}", "UTF-8");
 
         Client c = Client.create();
-        WebResource.Builder resourceBuilder = c.resource(fullUrl + '?' + query).getRequestBuilder();
+        WebResource.Builder resourceBuilder = c.resource(fullUrl + "?query=" + URLEncoder.encode(query, "UTF-8")).getRequestBuilder();
 
         for(Map.Entry<String, List<String>> header:headers.getRequestHeaders().entrySet()){
             LOGGER.info("Header: " + header.getKey() + " : " + header.getValue());
@@ -57,6 +58,7 @@ public class SecuredProxy {
         }
 
         resourceBuilder.accept(MediaType.valueOf("application/sparql-results+json"));
+        //resourceBuilder.accept(MediaType.valueOf("text/rdf+n3"));
 
         ClientResponse clientResponse = resourceBuilder.get(ClientResponse.class);
 
@@ -71,20 +73,24 @@ public class SecuredProxy {
     }
 
     @PUT
-    //@Path("{uri: .*}")
-    public Response put(@Context HttpHeaders headers, String uri, String requestBodyAsString) throws Exception {
+    @Path("/repositories/{repositoryId: .* }")
+    public Response put(
+            @Context HttpHeaders headers,
+            @PathParam("repositoryId") String repositoryId,
+            byte[] bytes
+    ) throws Exception {
 
-        LOGGER.info("PUT Path: " + uri);
         LOGGER.info("PUT Going to " + fullUrl);
+        LOGGER.info("Got " + bytes + " bytes");
 
         Client c = Client.create();
-        WebResource.Builder resourceBuilder = c.resource(urlS).entity(requestBodyAsString);
+        WebResource.Builder resourceBuilder = c.resource(urlS).entity(bytes);
 
         for(Map.Entry<String, List<String>> header:headers.getRequestHeaders().entrySet()){
             resourceBuilder.header(header.getKey(), header.getValue());
         }
 
-        ClientResponse clientResponse = resourceBuilder.put(ClientResponse.class, requestBodyAsString);
+        ClientResponse clientResponse = resourceBuilder.put(ClientResponse.class, bytes);
 
         Response.ResponseBuilder builder = Response
                 .status(clientResponse.getStatus())
@@ -92,6 +98,19 @@ public class SecuredProxy {
                 .type(clientResponse.getType());
 
         return builder.build();
+    }
+
+    @POST
+    @Path("/repositories/{repositoryId: .* }")
+    public Response post(
+            @Context HttpHeaders headers,
+            @PathParam("repositoryId") String repositoryId,
+            byte[] bytes
+    ) throws Exception {
+
+        LOGGER.info("POST request received");
+
+        return null;
     }
 
 }
