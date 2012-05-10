@@ -19,8 +19,18 @@ public class ConnectionTest extends EmbeddedJettyServer {
     }
 
     @Test
-    public void getConnectionToInMemRepoViaProxy(){
+    public void getConnectionToInMemRepoViaProxy() {
         // try and make successful conn
+        fail("make this work");
+    }
+
+    @Test
+    public void putRdfToRepoViaProxy() {
+        fail("make this work");
+    }
+
+    @Test
+    public void getRdfFromRepoViaProxy() {
         fail("make this work");
     }
 }
