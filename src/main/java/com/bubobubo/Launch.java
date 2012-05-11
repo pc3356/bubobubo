@@ -1,20 +1,17 @@
 package com.bubobubo;
 
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
-import org.openrdf.model.impl.LiteralImpl;
-import org.openrdf.model.impl.StatementImpl;
-import org.openrdf.model.impl.URIImpl;
-import org.openrdf.query.*;
+import org.openrdf.query.QueryLanguage;
+import org.openrdf.query.TupleQueryResult;
+import org.openrdf.query.resultio.TupleQueryResultFormat;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.http.HTTPGraphQuery;
 import org.openrdf.repository.http.HTTPRepository;
 import org.openrdf.repository.http.HTTPTupleQuery;
 import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.turtle.TurtleWriter;
+import org.openrdf.rio.RDFWriter;
+import org.openrdf.rio.Rio;
 
 import java.io.StringWriter;
-import java.util.UUID;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,35 +21,51 @@ import java.util.UUID;
  */
 public class Launch {
 
-    private final static String fullUrl = "http://localhost:8080/bubobubo/";
-    private final static String realUrl = "http://localhost:9090/openrdf-sesame";
-    private final static String proxyRepoId = "repositoryId";
+    private final static String proxyUrl = "http://localhost:8080/bubobubo/";
+    private final static String actualRepositoryUrl = "http://localhost:9090/openrdf-sesame";
+    private final static String testUrl = "http://localhost:9191/rest-endpoints";
     private final static String repositoryId = "native-j-rdf";
 
     public static void main(String[] args) throws Exception {
 
-        HTTPRepository repository = new HTTPRepository(fullUrl, repositoryId);
-        //HTTPRepository repository = new HTTPRepository(realUrl, repositoryId);
+        HTTPRepository repository = new HTTPRepository(testUrl, repositoryId);
 
         repository.initialize();
+        // authorization :: Basic dXNlcjpwYXNzd29yZA==
         repository.setUsernameAndPassword("user", "password");
 
         RepositoryConnection connection = repository.getConnection();
 
-        // GET
-        TupleQuery query = connection.prepareTupleQuery(QueryLanguage.SPARQL, "SELECT ?s WHERE {?s ?p ?o}");
-        repository.setPreferredRDFFormat(RDFFormat.N3);
-        TupleQueryResult result = query.evaluate();
+        try {
+//  CONSTRUCT
+//            HTTPGraphQuery graphQuery =
+//                    (HTTPGraphQuery)connection.prepareGraphQuery(
+//                            org.openrdf.query.QueryLanguage.SPARQL, "SELECT ?s WHERE {?s ?p ?o}");
+//            StringWriter out = new StringWriter();
+//            RDFWriter w = Rio.createWriter(RDFFormat.N3, out);
+//            graphQuery.evaluate(w);
+            //return stringout.toString();
 
-        // PUT
-        URI subject = new URIImpl("http://localhost/things/" + System.currentTimeMillis());
-        URI predicate = new URIImpl("http://localhost/onto#knows");
-        Value object = new LiteralImpl(UUID.randomUUID().toString());
-        URI context = new URIImpl("http://localhost/context/12345");
+            // POST
+            HTTPTupleQuery tupleQuery = (HTTPTupleQuery)connection.prepareTupleQuery(
+                    QueryLanguage.SPARQL,
+                    "SELECT ?s WHERE {?s ?p ?o}");
+            repository.setPreferredRDFFormat(RDFFormat.N3);
+            repository.setPreferredTupleQueryResultFormat(TupleQueryResultFormat.CSV);
+            TupleQueryResult result = tupleQuery.evaluate();
 
-        connection.add(new StatementImpl(subject, predicate, object), context);
+            // PUT
+//            URI subject = new URIImpl("http://localhost/things/" + System.currentTimeMillis());
+//            URI predicate = new URIImpl("http://localhost/onto#knows");
+//            Value object = new LiteralImpl(UUID.randomUUID().toString());
+//            URI context = new URIImpl("http://localhost/context/12345");
+//
+//            connection.add(new StatementImpl(subject, predicate, object), context);
 
-        connection.close();
+        } finally {
+            connection.close();
+        }
+
     }
 
 }
